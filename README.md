@@ -11,6 +11,5 @@ Passenger Management: Track reservations and seating arrangements
 Reports & Analytics: Generate reports on aircraft usage, maintenance, and scheduling.
 Installation
 Prerequisites:
-Python 3.x
 SQLite or MySQL (for database management)
 Required Python Libraries (see requirements.txt)
