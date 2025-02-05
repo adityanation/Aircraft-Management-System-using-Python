@@ -1,0 +1,135 @@
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+
+# Initialize Flask App
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aircraft.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize Database
+db = SQLAlchemy(app)
+
+# =======================
+# Database Models
+# =======================
+
+class Aircraft(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    registration_number = db.Column(db.String(50), unique=True, nullable=False)
+    model = db.Column(db.String(50), nullable=False)
+    manufacturer = db.Column(db.String(50), nullable=False)
+
+class Flight(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    flight_number = db.Column(db.String(50), unique=True, nullable=False)
+    origin = db.Column(db.String(50), nullable=False)
+    destination = db.Column(db.String(50), nullable=False)
+    aircraft_id = db.Column(db.Integer, db.ForeignKey('aircraft.id'), nullable=False)
+
+class Maintenance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    aircraft_id = db.Column(db.Integer, db.ForeignKey('aircraft.id'), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.String(20), nullable=False)
+
+# Create Database Tables
+with app.app_context():
+    db.create_all()
+
+# =======================
+# API Routes
+# =======================
+
+# Home Route
+@app.route('/')
+def home():
+    return "Welcome to the Aircraft Management System API!"
+
+# Add Aircraft
+@app.route('/aircraft', methods=['POST'])
+def add_aircraft():
+    data = request.get_json()
+    new_aircraft = Aircraft(
+        registration_number=data['registration_number'],
+        model=data['model'],
+        manufacturer=data['manufacturer']
+    )
+    db.session.add(new_aircraft)
+    db.session.commit()
+    return jsonify({"message": "Aircraft added successfully!"})
+
+# Get All Aircrafts
+@app.route('/aircraft', methods=['GET'])
+def get_aircrafts():
+    aircrafts = Aircraft.query.all()
+    output = []
+    for aircraft in aircrafts:
+        output.append({
+            'id': aircraft.id,
+            'registration_number': aircraft.registration_number,
+            'model': aircraft.model,
+            'manufacturer': aircraft.manufacturer
+        })
+    return jsonify(output)
+
+# Schedule a Flight
+@app.route('/flight', methods=['POST'])
+def schedule_flight():
+    data = request.get_json()
+    new_flight = Flight(
+        flight_number=data['flight_number'],
+        origin=data['origin'],
+        destination=data['destination'],
+        aircraft_id=data['aircraft_id']
+    )
+    db.session.add(new_flight)
+    db.session.commit()
+    return jsonify({"message": "Flight scheduled successfully!"})
+
+# Get All Flights
+@app.route('/flight', methods=['GET'])
+def get_flights():
+    flights = Flight.query.all()
+    output = []
+    for flight in flights:
+        output.append({
+            'id': flight.id,
+            'flight_number': flight.flight_number,
+            'origin': flight.origin,
+            'destination': flight.destination,
+            'aircraft_id': flight.aircraft_id
+        })
+    return jsonify(output)
+
+# Add Maintenance Record
+@app.route('/maintenance', methods=['POST'])
+def add_maintenance():
+    data = request.get_json()
+    new_maintenance = Maintenance(
+        aircraft_id=data['aircraft_id'],
+        description=data['description'],
+        date=data['date']
+    )
+    db.session.add(new_maintenance)
+    db.session.commit()
+    return jsonify({"message": "Maintenance record added successfully!"})
+
+# Get All Maintenance Records
+@app.route('/maintenance', methods=['GET'])
+def get_maintenance():
+    records = Maintenance.query.all()
+    output = []
+    for record in records:
+        output.append({
+            'id': record.id,
+            'aircraft_id': record.aircraft_id,
+            'description': record.description,
+            'date': record.date
+        })
+    return jsonify(output)
+
+# =======================
+# Run the Application
+# =======================
+if __name__ == '__main__':
+    app.run(debug=True)
