@@ -7,19 +7,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aircraft.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize Database
-
-
-# =======================
-# Database Models
-# =======================
-
-class Aircraft(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    registration_number = db.Column(db.String(50), unique=True, nullable=False)
-    model = db.Column(db.String(50), nullable=False)
-    manufacturer = db.Column(db.String(50), nullable=False)
-
-class Flight(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     flight_number = db.Column(db.String(50), unique=True, nullable=False)
     origin = db.Column(db.String(50), nullable=False)
