@@ -86,33 +86,14 @@ def get_flights():
             'destination': flight.destination,
             'aircraft_id': flight.aircraft_id
         })
-    return jsonify(output)
-
-# Add Maintenance Record
-@app.route('/maintenance', methods=['POST'])
-def add_maintenance():
-    data = request.get_json()
-    new_maintenance = Maintenance(
-        aircraft_id=data['aircraft_id'],
-        description=data['description'],
-        date=data['date']
-    )
-    db.session.add(new_maintenance)
-    db.session.commit()
-    return jsonify({"message": "Maintenance record added successfully!"})
-
-# Get All Maintenance Records
-@app.route('/maintenance', methods=['GET'])
-def get_maintenance():
-    records = Maintenance.query.all()
-    output = []
-    for record in records:
+    return jsonify(outputr record in records:
         output.append({
             'id': record.id,
             'aircraft_id': record.aircraft_id,
             'description': record.description,
             'date': record.date
         })
+// -*- mode: python -*-
     return jsonify(output)
 
 # =======================
