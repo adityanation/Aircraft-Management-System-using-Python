@@ -1,0 +1,74 @@
+// -*- mode: Java -*-
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Aircraft {
+    private String aircraftId;
+    private String model;
+    private int capacity;
+
+    public Aircraft(String aircraftId, String model, int capacity) {
+        this.aircraftId = aircraftId;
+        this.model = model;
+        this.capacity = capacity;
+    }
+
+    public void displayInfo() {
+        System.out.println("Aircraft ID: " + aircraftId + ", Model: " + model + ", Capacity: " + capacity);
+    }
+}
+
+class AircraftManagement {
+    private ArrayList<Aircraft> aircraftList = new ArrayList<>();
+
+    public void addAircraft(String aircraftId, String model, int capacity) {
+        Aircraft aircraft = new Aircraft(aircraftId, model, capacity);
+        aircraftList.add(aircraft);
+        System.out.println("Aircraft added successfully!");
+    }
+
+    public void displayAircrafts() {
+        if (aircraftList.isEmpty()) {
+            System.out.println("No aircrafts available.");
+        } else {
+            for (Aircraft aircraft : aircraftList) {
+                aircraft.displayInfo();
+            }
+        }
+    }
+}
+
+public class AircraftSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        AircraftManagement system = new AircraftManagement();
+
+        while (true) {
+            System.out.println("\nAircraft Management System");
+            System.out.println("1. Add Aircraft");
+            System.out.println("2. Display Aircrafts");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            if (choice == 1) {
+                System.out.print("Enter Aircraft ID: ");
+                String aircraftId = scanner.nextLine();
+                System.out.print("Enter Aircraft Model: ");
+                String model = scanner.nextLine();
+                System.out.print("Enter Seating Capacity: ");
+                int capacity = scanner.nextInt();
+                system.addAircraft(aircraftId, model, capacity);
+            } else if (choice == 2) {
+                system.displayAircrafts();
+            } else if (choice == 3) {
+                System.out.println("Exiting...");
+                break;
+            } else {
+                System.out.println("Invalid choice! Please enter a valid option.");
+            }
+        }
+        scanner.close();
+    }
+}
